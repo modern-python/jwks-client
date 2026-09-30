@@ -27,7 +27,12 @@ dependencies = [
     "pyjwt[crypto]>=2.15.1",
     # 0.15.0 introduced max_response_body_bytes.
     "httpware>=0.15.0,<1",
+    "httpx2>=2.0.0,<3",
 ]
+
+[project.optional-dependencies]
+litestar = ["litestar>=2.12"]
+fastapi = ["fastapi>=0.115"]
 
 [project.urls]
 Homepage = "https://modern-python.org"
