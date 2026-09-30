@@ -1,4 +1,21 @@
-# jwks-client
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)"  srcset="https://raw.githubusercontent.com/modern-python/.github/main/brand/projects/jwks-client/lockup-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/modern-python/.github/main/brand/projects/jwks-client/lockup-light.svg">
+    <img alt="jwks-client" src="https://raw.githubusercontent.com/modern-python/.github/main/brand/projects/jwks-client/lockup.png" width="420">
+  </picture>
+</p>
+
+[![PyPI version](https://img.shields.io/pypi/v/jwks-client.svg)](https://pypi.org/project/jwks-client/)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/jwks-client.svg)](https://pypi.org/project/jwks-client/)
+[![Downloads](https://static.pepy.tech/badge/jwks-client/month)](https://pepy.tech/projects/jwks-client)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://github.com/modern-python/jwks-client/actions/workflows/ci.yml)
+[![CI](https://github.com/modern-python/jwks-client/actions/workflows/ci.yml/badge.svg)](https://github.com/modern-python/jwks-client/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/modern-python/jwks-client.svg)](https://github.com/modern-python/jwks-client/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/modern-python/jwks-client)](https://github.com/modern-python/jwks-client/stargazers)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![ty](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ty/main/assets/badge/v0.json)](https://github.com/astral-sh/ty)
 
 An async JWKS client for verifying JWTs, with key caching, resilient fetching over
 [httpware](https://github.com/modern-python/httpware), and Litestar and FastAPI integrations. It
