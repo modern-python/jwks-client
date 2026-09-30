@@ -32,4 +32,4 @@ If the concept you need isn't in the glossary yet, that's a signal: either you'r
 
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
-> _Contradicts ADR-0001 (retry default stays env configured), but worth reopening because…_
+> _Contradicts ADR-0001 (PyJWT is the JOSE library), but worth reopening because…_
