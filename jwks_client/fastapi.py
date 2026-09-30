@@ -5,9 +5,8 @@ from fastapi import HTTPException, Request, status
 from fastapi.openapi.models import HTTPBearer, OpenIdConnect
 from fastapi.security.base import SecurityBase
 
-from jwks_client._integration import UserParser, VerifierSource, resolve_verifier
 from jwks_client.errors import JWKSFetchError
-from jwks_client.verifier import extract_bearer_token
+from jwks_client.verifier import TokenVerifier, UserParser, extract_bearer_token
 
 
 UNAUTHORIZED_HEADERS: typing.Final = {"WWW-Authenticate": "Bearer"}
@@ -20,7 +19,7 @@ def _create_unauthorized_error() -> HTTPException:
 class JWKSBearer(SecurityBase):
     def __init__(
         self,
-        verifier: VerifierSource,
+        verifier: TokenVerifier,
         *,
         user_parser: UserParser | None = None,
         openid_configuration_url: str | None = None,
@@ -39,7 +38,7 @@ class JWKSBearer(SecurityBase):
         if token is None:
             raise _create_unauthorized_error()
         try:
-            claims: typing.Final = await (await resolve_verifier(self.verifier)).verify(token)
+            claims: typing.Final = await self.verifier.verify(token)
         except jwt.InvalidTokenError as exc:
             raise _create_unauthorized_error() from exc
         except JWKSFetchError as exc:

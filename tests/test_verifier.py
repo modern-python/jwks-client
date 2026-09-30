@@ -3,7 +3,7 @@ import typing
 import jwt
 import pytest
 
-from jwks_client import JWKSClient, JWTVerifier, TokenVerifier, extract_bearer_token
+from jwks_client import JWKSClient, JWTVerifier, extract_bearer_token
 from tests.conftest import JWKSServer, SigningKey
 
 
@@ -39,10 +39,6 @@ async def test_verify_rejects_tokens_outside_policy(
 
     with pytest.raises(error):
         await verifier.verify(signing_key.issue_token(claims))
-
-
-def test_jwt_verifier_satisfies_token_verifier_protocol(make_client: typing.Callable[..., JWKSClient]) -> None:
-    assert isinstance(JWTVerifier(make_client(), algorithms=["RS256"]), TokenVerifier)
 
 
 def test_jwt_verifier_requires_algorithms(make_client: typing.Callable[..., JWKSClient]) -> None:

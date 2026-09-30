@@ -112,17 +112,18 @@ Both integrations declare an HTTP `Bearer` scheme. Pass `openid_configuration_ur
 discovery document at `/.well-known/openid-configuration` rather than its JWKS URL, to declare an
 `OpenIdConnect` scheme as well (Litestar) or instead (FastAPI).
 
-## Resolving the verifier per request
+## Resolving the verifier lazily
 
-Both integrations take either a `TokenVerifier` or an async function returning one, so a verifier
-can come from a DI container:
+Both integrations take a `TokenVerifier`: anything with an async `verify(token)`. A verifier that
+lives in a DI container can be resolved on each call by a small wrapper:
 
 ```python
-async def get_verifier() -> TokenVerifier:
-    return container.resolve(Verifier)
+class ContainerVerifier:
+    async def verify(self, token: str) -> dict[str, typing.Any]:
+        return await container.resolve(JWTVerifier).verify(token)
 
 
-DefineMiddleware(JWKSAuthMiddleware, verifier=get_verifier)
+DefineMiddleware(JWKSAuthMiddleware, verifier=ContainerVerifier())
 ```
 
 The container must hand back the same verifier every time: a new `JWKSClient` per request starts

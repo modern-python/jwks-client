@@ -7,7 +7,7 @@ import httpware
 import httpx2
 import pytest
 
-from jwks_client import JWKSClient, JWTVerifier, TokenVerifier
+from jwks_client import JWKSClient, JWTVerifier
 from jwks_client.fastapi import JWKSBearer
 from jwks_client.testing import FakeIdentityProvider
 
@@ -81,15 +81,6 @@ async def test_unreachable_identity_provider_is_service_unavailable(idp: FakeIde
     response = await call(build_app(JWKSBearer(JWTVerifier(jwks, algorithms=["RS256"]))), idp.issue_token())
 
     assert response.status_code == HTTPStatus.SERVICE_UNAVAILABLE
-
-
-async def test_verifier_can_be_resolved_per_request(idp: FakeIdentityProvider, verifier: JWTVerifier) -> None:
-    async def get_verifier() -> TokenVerifier:
-        return verifier
-
-    response = await call(build_app(JWKSBearer(get_verifier)), idp.issue_token({"aud": "api"}))
-
-    assert response.status_code == HTTPStatus.OK
 
 
 def test_openapi_declares_bearer_scheme(verifier: JWTVerifier) -> None:

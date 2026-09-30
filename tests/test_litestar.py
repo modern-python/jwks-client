@@ -35,7 +35,7 @@ async def health() -> str:
     return "ok"
 
 
-def build_app(verifier: object, **middleware_kwargs: typing.Any) -> litestar.Litestar:  # noqa: ANN401
+def build_app(verifier: TokenVerifier, **middleware_kwargs: typing.Any) -> litestar.Litestar:  # noqa: ANN401
     return litestar.Litestar(
         route_handlers=[read_claims, read_user, health],
         middleware=[DefineMiddleware(JWKSAuthMiddleware, verifier=verifier, **middleware_kwargs)],
@@ -119,11 +119,12 @@ async def test_excluded_path_skips_authentication(verifier: JWTVerifier) -> None
     assert response.status_code == HTTPStatus.OK
 
 
-async def test_verifier_can_be_resolved_per_request(idp: FakeIdentityProvider, verifier: JWTVerifier) -> None:
-    async def get_verifier() -> TokenVerifier:
-        return verifier
+async def test_verifier_resolving_lazily_is_accepted(idp: FakeIdentityProvider, verifier: JWTVerifier) -> None:
+    class LazyVerifier:
+        async def verify(self, token: str) -> dict[str, typing.Any]:
+            return await verifier.verify(token)
 
-    async with AsyncTestClient(build_app(get_verifier)) as client:
+    async with AsyncTestClient(build_app(LazyVerifier())) as client:
         response = await client.get(
             "/claims", headers={"Authorization": f"Bearer {idp.issue_token({'sub': 'u1', 'aud': 'api'})}"}
         )

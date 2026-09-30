@@ -8,9 +8,8 @@ from litestar.middleware import AbstractAuthenticationMiddleware, Authentication
 from litestar.openapi.spec import Components, SecurityRequirement, SecurityScheme
 from litestar.types import ASGIApp, Method, Scopes
 
-from jwks_client._integration import UserParser, VerifierSource, resolve_verifier
 from jwks_client.errors import JWKSFetchError
-from jwks_client.verifier import extract_bearer_token
+from jwks_client.verifier import TokenVerifier, UserParser, extract_bearer_token
 
 
 UNAUTHORIZED_HEADERS: typing.Final = {"WWW-Authenticate": "Bearer"}
@@ -21,7 +20,7 @@ class JWKSAuthMiddleware(AbstractAuthenticationMiddleware):
         self,
         app: ASGIApp,
         *,
-        verifier: VerifierSource,
+        verifier: TokenVerifier,
         user_parser: UserParser | None = None,
         exclude: str | list[str] | None = None,
         exclude_from_auth_key: str = "exclude_from_auth",
@@ -39,7 +38,7 @@ class JWKSAuthMiddleware(AbstractAuthenticationMiddleware):
         if token is None:
             raise NotAuthorizedException(headers=UNAUTHORIZED_HEADERS)
         try:
-            claims: typing.Final = await (await resolve_verifier(self.verifier)).verify(token)
+            claims: typing.Final = await self.verifier.verify(token)
         except jwt.InvalidTokenError as exc:
             raise NotAuthorizedException(headers=UNAUTHORIZED_HEADERS) from exc
         except JWKSFetchError as exc:

@@ -1,6 +1,6 @@
 import datetime
 import typing
-from collections.abc import Container, Iterable, Sequence
+from collections.abc import Callable, Container, Iterable, Sequence
 
 from jwt.types import Options
 
@@ -10,7 +10,9 @@ from jwks_client.client import JWKSClient
 BEARER_SCHEME: typing.Final = "bearer"
 
 
-@typing.runtime_checkable
+UserParser = Callable[[dict[str, typing.Any]], typing.Any]
+
+
 class TokenVerifier(typing.Protocol):
     async def verify(self, token: str) -> dict[str, typing.Any]: ...
 
