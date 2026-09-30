@@ -82,6 +82,7 @@ ignore = [
     "FBT",    # boolean positional arguments are fine
     "TCH",    # imports stay real; TYPE_CHECKING-only imports break runtime introspection
 ]
+pylint.max-args = 10
 isort.lines-after-imports = 2
 isort.no-lines-before = ["standard-library", "local-folder"]
 

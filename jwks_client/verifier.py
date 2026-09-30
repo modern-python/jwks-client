@@ -16,7 +16,7 @@ class TokenVerifier(typing.Protocol):
 
 
 class JWTVerifier:
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         jwks: JWKSClient,
         *,

@@ -69,7 +69,7 @@ def _default_http_client() -> httpware.AsyncClient:
 
 
 class JWKSClient:
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         uri: str,
         *,
@@ -119,7 +119,7 @@ class JWKSClient:
     async def get_signing_key_from_jwt(self, token: str | bytes) -> jwt.PyJWK:
         return (await self._find(jwt.get_unverified_header(token).get("kid"))).key
 
-    async def decode(  # noqa: PLR0913
+    async def decode(
         self,
         token: str | bytes,
         *,
