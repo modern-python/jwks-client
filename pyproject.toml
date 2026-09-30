@@ -1,0 +1,105 @@
+[project]
+name = "jwks-client"
+description = "Async JWKS client for verifying JWTs, with key caching, resilient fetching, and Litestar and FastAPI integrations"
+authors = [
+    { name = "Artur Shiriev", email = "me@shiriev.ru" },
+]
+readme = "README.md"
+requires-python = ">=3.11,<4"
+license = "MIT"
+keywords = ["jwks", "jwt", "jwk", "oidc", "oauth2", "authentication", "asyncio", "litestar", "fastapi", "python"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Free Threading :: 2 - Beta",
+    "Typing :: Typed",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries",
+    "Framework :: AsyncIO",
+    "Framework :: FastAPI",
+    "Framework :: Litestar",
+]
+version = "0"
+dependencies = [
+    # 2.15.1 carries the fixes for the 2026 advisories and binds a PyJWK's algorithm at verify time.
+    "pyjwt[crypto]>=2.15.1",
+    # 0.15.0 introduced max_response_body_bytes.
+    "httpware>=0.15.0,<1",
+    "httpx2>=2.0.0,<3",
+]
+
+[project.optional-dependencies]
+litestar = ["litestar>=2.19"]
+fastapi = ["fastapi>=0.115"]
+
+[project.urls]
+Homepage = "https://modern-python.org"
+Repository = "https://github.com/modern-python/jwks-client"
+Issues = "https://github.com/modern-python/jwks-client/issues"
+Changelog = "https://github.com/modern-python/jwks-client/releases"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "pytest-asyncio>=0.24",
+]
+lint = [
+    "ruff",
+    "ty",
+    "eof-fixer",
+]
+
+[build-system]
+requires = ["uv_build>=0.11,<1.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "jwks_client"
+module-root = ""
+
+[tool.ruff]
+fix = true
+unsafe-fixes = true
+line-length = 120
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D1",     # docstrings are not forced; a docstring exists when it says something
+    "D203",   # conflicts with D211
+    "D213",   # conflicts with D212
+    "COM812", # conflicts with the formatter
+    "ISC001", # conflicts with the formatter
+    "CPY001", # no per-file copyright header
+    "FBT",    # boolean positional arguments are fine
+    "TCH",    # imports stay real; TYPE_CHECKING-only imports break runtime introspection
+]
+pylint.max-args = 10
+isort.lines-after-imports = 2
+isort.no-lines-before = ["standard-library", "local-folder"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "S101",    # assert is the test idiom; in library code it is a finding
+    "PLR2004", # request counts read clearer as literals than as named constants
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ""
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.report]
+fail_under = 100
+exclude_also = [
+    "if typing.TYPE_CHECKING:",
+]
