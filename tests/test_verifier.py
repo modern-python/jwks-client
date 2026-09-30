@@ -24,6 +24,7 @@ async def test_verify_applies_configured_policy(
         ({"aud": "other", "iss": "https://idp.example.test"}, jwt.InvalidAudienceError),
         ({"aud": "api", "iss": "https://evil.example.test"}, jwt.InvalidIssuerError),
         ({"aud": "api"}, jwt.MissingRequiredClaimError),
+        ({"iss": "https://idp.example.test"}, jwt.MissingRequiredClaimError),
     ],
 )
 async def test_verify_rejects_tokens_outside_policy(

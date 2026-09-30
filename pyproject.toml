@@ -1,13 +1,13 @@
 [project]
 name = "jwks-client"
-description = "Async JWKS client for verifying JWTs, with key caching and resilient fetching over httpware"
+description = "Async JWKS client for verifying JWTs, with key caching, resilient fetching, and Litestar and FastAPI integrations"
 authors = [
     { name = "Artur Shiriev", email = "me@shiriev.ru" },
 ]
 readme = "README.md"
 requires-python = ">=3.11,<4"
 license = "MIT"
-keywords = ["jwks", "jwt", "jwk", "oidc", "oauth2", "authentication", "asyncio", "python"]
+keywords = ["jwks", "jwt", "jwk", "oidc", "oauth2", "authentication", "asyncio", "litestar", "fastapi", "python"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -20,6 +20,8 @@ classifiers = [
     "Topic :: Security",
     "Topic :: Software Development :: Libraries",
     "Framework :: AsyncIO",
+    "Framework :: FastAPI",
+    "Framework :: Litestar",
 ]
 version = "0"
 dependencies = [
@@ -31,7 +33,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-litestar = ["litestar>=2.12"]
+litestar = ["litestar>=2.19"]
 fastapi = ["fastapi>=0.115"]
 
 [project.urls]

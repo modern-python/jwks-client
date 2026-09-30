@@ -16,9 +16,10 @@ vocabulary — read it before naming a concept in code, a test name, or an issue
 
 ## Architecture
 
-`jwks_client/client.py` holds the whole client and `jwks_client/errors.py` its exceptions. Tests
-drive time through an injected clock and the network through `httpx2.MockTransport`; never sleep in
-a test.
+`jwks_client/client.py` fetches and caches keys, `verifier.py` fixes the claims policy on top, and
+`litestar.py` and `fastapi.py` are the optional integrations: they may import their framework, the
+core modules never do. Tests drive time through an injected clock and the network through
+`httpx2.MockTransport`; never sleep in a test.
 
 ## Workflow
 
