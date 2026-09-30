@@ -11,7 +11,7 @@ from tests.conftest import JWKS_URI, JWKSServer, SigningKey
 async def test_injected_http_client_is_left_open(
     http_client: httpware.AsyncClient, server: JWKSServer, signing_key: SigningKey
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
 
     async with JWKSClient(JWKS_URI, http_client=http_client):
         pass

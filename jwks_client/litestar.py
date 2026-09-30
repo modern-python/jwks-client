@@ -56,7 +56,7 @@ class OpenAPISecurityConfig(typing.TypedDict):
     security: list[SecurityRequirement]
 
 
-def openapi_security_config(openid_configuration_url: str | None = None) -> OpenAPISecurityConfig:
+def create_openapi_security_config(openid_configuration_url: str | None = None) -> OpenAPISecurityConfig:
     schemes: typing.Final[dict[str, SecurityScheme]] = {
         "Bearer": SecurityScheme(type="http", scheme="bearer", bearer_format="JWT"),
     }

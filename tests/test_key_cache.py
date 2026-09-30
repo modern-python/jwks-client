@@ -11,7 +11,7 @@ from tests.conftest import FakeClock, JWKSServer, SigningKey
 async def test_get_signing_key_fetches_once_within_ttl(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     client = make_client(ttl=300)
 
     first = await client.get_signing_key("key-1")
@@ -25,7 +25,7 @@ async def test_get_signing_key_fetches_once_within_ttl(
 async def test_expired_key_set_is_refetched(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     client = make_client(ttl=300)
 
     await client.get_signing_key("key-1")
@@ -39,8 +39,8 @@ async def test_unknown_kid_refetches_and_finds_rotated_key(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
     rotated = SigningKey(kid="key-2")
-    server.serve(signing_key.jwk())
-    server.serve(signing_key.jwk(), rotated.jwk())
+    server.serve(signing_key.to_jwk())
+    server.serve(signing_key.to_jwk(), rotated.to_jwk())
     client = make_client(refetch_cooldown=30)
 
     await client.get_signing_key("key-1")
@@ -54,7 +54,7 @@ async def test_unknown_kid_refetches_and_finds_rotated_key(
 async def test_unknown_kid_within_cooldown_does_not_refetch(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     client = make_client(refetch_cooldown=30)
 
     await client.get_signing_key("key-1")
@@ -68,7 +68,7 @@ async def test_unknown_kid_within_cooldown_does_not_refetch(
 async def test_unknown_kid_refetches_at_most_once_per_cooldown(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     client = make_client(refetch_cooldown=30)
     await client.get_signing_key("key-1")
     clock.advance(30)
@@ -83,7 +83,7 @@ async def test_unknown_kid_refetches_at_most_once_per_cooldown(
 async def test_concurrent_cold_lookups_share_one_fetch(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     client = make_client()
 
     keys = await asyncio.gather(*(client.get_signing_key("key-1") for _ in range(10)))
@@ -95,7 +95,7 @@ async def test_concurrent_cold_lookups_share_one_fetch(
 async def test_refresh_prefetches_keys(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     client = make_client()
 
     await client.refresh()
@@ -108,12 +108,12 @@ async def test_key_set_keeps_only_signing_keys_with_kid(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey
 ) -> None:
     no_use = SigningKey(kid="no-use")
-    no_kid = signing_key.jwk()
+    no_kid = signing_key.to_jwk()
     del no_kid["kid"]
     server.serve(
-        signing_key.jwk(use="sig"),
-        no_use.jwk(),
-        SigningKey(kid="enc").jwk(use="enc"),
+        signing_key.to_jwk(use="sig"),
+        no_use.to_jwk(),
+        SigningKey(kid="enc").to_jwk(use="enc"),
         no_kid,
         {"kty": "unknown", "kid": "broken"},
         "not-a-jwk",  # ty: ignore[invalid-argument-type]
@@ -130,10 +130,10 @@ async def test_key_set_keeps_only_signing_keys_with_kid(
 async def test_get_signing_key_from_jwt_reads_kid_header(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     client = make_client()
 
-    key = await client.get_signing_key_from_jwt(signing_key.token())
+    key = await client.get_signing_key_from_jwt(signing_key.issue_token())
 
     assert key.key_id == "key-1"
 

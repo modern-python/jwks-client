@@ -40,7 +40,7 @@ def idp() -> FakeIdentityProvider:
 
 @pytest.fixture
 def verifier(idp: FakeIdentityProvider) -> JWTVerifier:
-    return JWTVerifier(idp.jwks_client(), algorithms=["RS256"], audience="api")
+    return JWTVerifier(idp.create_jwks_client(), algorithms=["RS256"], audience="api")
 
 
 async def test_valid_token_returns_claims(idp: FakeIdentityProvider, verifier: JWTVerifier) -> None:

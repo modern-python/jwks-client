@@ -11,7 +11,7 @@ from litestar.openapi.config import OpenAPIConfig
 from litestar.testing import AsyncTestClient
 
 from jwks_client import JWKSClient, JWTVerifier, TokenVerifier
-from jwks_client.litestar import JWKSAuthMiddleware, openapi_security_config
+from jwks_client.litestar import JWKSAuthMiddleware, create_openapi_security_config
 from jwks_client.testing import FakeIdentityProvider
 
 
@@ -49,7 +49,7 @@ def idp() -> FakeIdentityProvider:
 
 @pytest.fixture
 def verifier(idp: FakeIdentityProvider) -> JWTVerifier:
-    return JWTVerifier(idp.jwks_client(), algorithms=["RS256"], audience="api")
+    return JWTVerifier(idp.create_jwks_client(), algorithms=["RS256"], audience="api")
 
 
 async def test_valid_token_exposes_claims_as_user_and_auth(idp: FakeIdentityProvider, verifier: JWTVerifier) -> None:
@@ -132,7 +132,7 @@ async def test_verifier_can_be_resolved_per_request(idp: FakeIdentityProvider, v
 
 
 def test_openapi_security_config_declares_bearer_scheme() -> None:
-    config = OpenAPIConfig(title="api", version="1", **openapi_security_config())
+    config = OpenAPIConfig(title="api", version="1", **create_openapi_security_config())
 
     schema = litestar.Litestar(route_handlers=[health], openapi_config=config).openapi_schema.to_schema()
 
@@ -144,7 +144,7 @@ def test_openapi_security_config_declares_bearer_scheme() -> None:
 
 def test_openapi_security_config_adds_openid_connect_when_given_discovery_url() -> None:
     discovery_url = "https://idp.test/.well-known/openid-configuration"
-    config = OpenAPIConfig(title="api", version="1", **openapi_security_config(discovery_url))
+    config = OpenAPIConfig(title="api", version="1", **create_openapi_security_config(discovery_url))
 
     schema = litestar.Litestar(route_handlers=[health], openapi_config=config).openapi_schema.to_schema()
 

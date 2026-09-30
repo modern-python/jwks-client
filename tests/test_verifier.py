@@ -10,10 +10,10 @@ from tests.conftest import JWKSServer, SigningKey
 async def test_verify_applies_configured_policy(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     verifier = JWTVerifier(make_client(), algorithms=["RS256"], audience="api", issuer="https://idp.example.test")
 
-    claims = await verifier.verify(signing_key.token({"aud": "api", "iss": "https://idp.example.test"}))
+    claims = await verifier.verify(signing_key.issue_token({"aud": "api", "iss": "https://idp.example.test"}))
 
     assert claims["sub"] == "user-1"
 
@@ -34,11 +34,11 @@ async def test_verify_rejects_tokens_outside_policy(
     claims: dict[str, str],
     error: type[Exception],
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     verifier = JWTVerifier(make_client(), algorithms=["RS256"], audience="api", issuer="https://idp.example.test")
 
     with pytest.raises(error):
-        await verifier.verify(signing_key.token(claims))
+        await verifier.verify(signing_key.issue_token(claims))
 
 
 def test_jwt_verifier_satisfies_token_verifier_protocol(make_client: typing.Callable[..., JWKSClient]) -> None:

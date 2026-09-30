@@ -60,7 +60,7 @@ def _require_duration(name: str, value: float, *, allow_zero: bool) -> None:
         raise ValueError(msg)
 
 
-def _default_http_client() -> httpware.AsyncClient:
+def _create_default_http_client() -> httpware.AsyncClient:
     return httpware.AsyncClient(
         timeout=DEFAULT_TIMEOUT,
         max_response_body_bytes=DEFAULT_MAX_RESPONSE_BODY_BYTES,
@@ -88,7 +88,7 @@ class JWKSClient:
 
         self.uri: typing.Final = uri
         self._owns_http_client: typing.Final = http_client is None
-        self._http_client: typing.Final = http_client or _default_http_client()
+        self._http_client: typing.Final = http_client or _create_default_http_client()
         self._ttl: typing.Final = ttl
         self._refetch_cooldown: typing.Final = refetch_cooldown
         self._stale_if_error: typing.Final = stale_if_error

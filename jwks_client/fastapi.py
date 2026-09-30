@@ -13,7 +13,7 @@ from jwks_client.verifier import extract_bearer_token
 UNAUTHORIZED_HEADERS: typing.Final = {"WWW-Authenticate": "Bearer"}
 
 
-def _unauthorized() -> HTTPException:
+def _create_unauthorized_error() -> HTTPException:
     return HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Not authenticated", headers=UNAUTHORIZED_HEADERS)
 
 
@@ -37,15 +37,15 @@ class JWKSBearer(SecurityBase):
     async def __call__(self, request: Request) -> typing.Any:  # noqa: ANN401
         token: typing.Final = extract_bearer_token(request.headers.get("Authorization"))
         if token is None:
-            raise _unauthorized()
+            raise _create_unauthorized_error()
         try:
             claims: typing.Final = await (await resolve_verifier(self.verifier)).verify(token)
         except jwt.InvalidTokenError as exc:
-            raise _unauthorized() from exc
+            raise _create_unauthorized_error() from exc
         except JWKSFetchError as exc:
             raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, detail="Identity provider unavailable") from exc
 
         user: typing.Final = claims if self.user_parser is None else self.user_parser(claims)
         if user is None:
-            raise _unauthorized()
+            raise _create_unauthorized_error()
         return user

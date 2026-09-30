@@ -63,7 +63,7 @@ import litestar
 from litestar.middleware import DefineMiddleware
 from litestar.openapi.config import OpenAPIConfig
 
-from jwks_client.litestar import JWKSAuthMiddleware, openapi_security_config
+from jwks_client.litestar import JWKSAuthMiddleware, create_openapi_security_config
 
 
 app = litestar.Litestar(
@@ -76,7 +76,7 @@ app = litestar.Litestar(
             exclude=["/health", "/docs"],
         ),
     ],
-    openapi_config=OpenAPIConfig(title="my-api", version="1", **openapi_security_config()),
+    openapi_config=OpenAPIConfig(title="my-api", version="1", **create_openapi_security_config()),
 )
 ```
 
@@ -169,7 +169,7 @@ from jwks_client.testing import FakeIdentityProvider
 
 
 idp = FakeIdentityProvider()
-verifier = JWTVerifier(idp.jwks_client(), algorithms=["RS256"], audience="my-api", issuer=idp.issuer)
+verifier = JWTVerifier(idp.create_jwks_client(), algorithms=["RS256"], audience="my-api", issuer=idp.issuer)
 token = idp.issue_token({"sub": "user-1", "aud": "my-api"})
 ```
 

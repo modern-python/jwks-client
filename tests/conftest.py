@@ -24,11 +24,13 @@ class SigningKey:
         default_factory=lambda: rsa.generate_private_key(public_exponent=65537, key_size=2048)
     )
 
-    def jwk(self, **extra: str) -> dict[str, typing.Any]:
+    def to_jwk(self, **extra: str) -> dict[str, typing.Any]:
         data: dict[str, typing.Any] = json.loads(RSAAlgorithm.to_jwk(self.private_key.public_key()))
         return data | {"kid": self.kid} | extra
 
-    def token(self, claims: dict[str, typing.Any] | None = None, *, algorithm: str = "RS256", **headers: str) -> str:
+    def issue_token(
+        self, claims: dict[str, typing.Any] | None = None, *, algorithm: str = "RS256", **headers: str
+    ) -> str:
         payload = {"sub": "user-1", "exp": datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(minutes=5)}
         return jwt.encode(
             payload | (claims or {}), self.private_key, algorithm=algorithm, headers={"kid": self.kid} | headers
@@ -88,7 +90,7 @@ def http_client(server: JWKSServer) -> httpware.AsyncClient:
 
 @pytest.fixture
 def make_client(http_client: httpware.AsyncClient, clock: FakeClock) -> typing.Callable[..., JWKSClient]:
-    def factory(**kwargs: float) -> JWKSClient:
+    def create_client(**kwargs: float) -> JWKSClient:
         return JWKSClient(JWKS_URI, http_client=http_client, clock=clock, **kwargs)
 
-    return factory
+    return create_client

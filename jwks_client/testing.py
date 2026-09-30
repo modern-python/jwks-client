@@ -37,7 +37,7 @@ class FakeIdentityProvider:
             payload, self._private_key, algorithm="RS256", headers={"kid": self.kid} | dict(headers or {})
         )
 
-    def jwks_client(self) -> JWKSClient:
+    def create_jwks_client(self) -> JWKSClient:
         transport: typing.Final = httpx2.MockTransport(lambda _: httpx2.Response(200, json=self.jwks))
         return JWKSClient(
             self.jwks_uri, http_client=httpware.AsyncClient(httpx2_client=httpx2.AsyncClient(transport=transport))

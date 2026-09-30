@@ -9,7 +9,7 @@ from jwks_client.testing import FakeIdentityProvider, StaticTokenVerifier
 
 async def test_fake_identity_provider_tokens_verify_against_its_jwks() -> None:
     idp = FakeIdentityProvider()
-    verifier = JWTVerifier(idp.jwks_client(), algorithms=["RS256"], audience="api", issuer=idp.issuer)
+    verifier = JWTVerifier(idp.create_jwks_client(), algorithms=["RS256"], audience="api", issuer=idp.issuer)
 
     claims = await verifier.verify(idp.issue_token({"sub": "user-1", "aud": "api"}))
 
@@ -19,7 +19,7 @@ async def test_fake_identity_provider_tokens_verify_against_its_jwks() -> None:
 
 async def test_fake_identity_provider_issues_expired_tokens() -> None:
     idp = FakeIdentityProvider()
-    verifier = JWTVerifier(idp.jwks_client(), algorithms=["RS256"])
+    verifier = JWTVerifier(idp.create_jwks_client(), algorithms=["RS256"])
 
     with pytest.raises(jwt.ExpiredSignatureError):
         await verifier.verify(idp.issue_token(expires_in=datetime.timedelta(seconds=-1)))

@@ -54,7 +54,7 @@ async def test_failed_fetch_backs_off_for_cooldown(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
     server.fail(httpx2.Response(500))
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     client = make_client(refetch_cooldown=30)
 
     with pytest.raises(JWKSFetchError):
@@ -72,7 +72,7 @@ async def test_failed_fetch_backs_off_for_cooldown(
 async def test_stale_keys_are_served_when_refresh_fails(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     server.fail(httpx2.Response(503))
     client = make_client(ttl=300, stale_if_error=600)
 
@@ -87,7 +87,7 @@ async def test_stale_keys_are_served_when_refresh_fails(
 async def test_stale_keys_expire_after_stale_if_error(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     server.fail(httpx2.Response(503))
     client = make_client(ttl=300, stale_if_error=600)
 
@@ -101,7 +101,7 @@ async def test_stale_keys_expire_after_stale_if_error(
 async def test_failed_unknown_kid_refetch_keeps_current_keys(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     server.fail(httpx2.Response(503))
     client = make_client(refetch_cooldown=30)
 
@@ -126,7 +126,7 @@ async def test_refresh_propagates_fetch_error(
 async def test_stale_keys_are_served_without_refetch_during_cooldown(
     make_client: typing.Callable[..., JWKSClient], server: JWKSServer, signing_key: SigningKey, clock: FakeClock
 ) -> None:
-    server.serve(signing_key.jwk())
+    server.serve(signing_key.to_jwk())
     server.fail(httpx2.Response(503))
     client = make_client(ttl=300, refetch_cooldown=30)
 
