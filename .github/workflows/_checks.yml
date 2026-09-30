@@ -76,6 +76,30 @@ jobs:
           PYTHONDONTWRITEBYTECODE: 1
           PYTHONUNBUFFERED: 1
 
+  core:
+    # Every other job installs all extras, so none of them sees what a bare install imports.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.11"
+          - "3.14"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8.2.0
+      - run: uv python install ${{ matrix.python-version }}
+      - run: uv python pin ${{ matrix.python-version }}
+      - run: uv venv
+      - run: uv pip install .
+      - run: uv run --no-sync python -c "import jwks_client, jwks_client.testing"
+      - name: Integrations name their missing extra
+        run: |
+          for extra in litestar fastapi; do
+            output="$(uv run --no-sync python -c "import jwks_client.$extra" 2>&1)" && exit 1
+            echo "$output" | grep -F "pip install 'jwks-client[$extra]'"
+          done
+
   links:
     runs-on: ubuntu-latest
     steps:

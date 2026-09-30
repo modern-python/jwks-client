@@ -2,14 +2,20 @@ import typing
 from collections.abc import Sequence
 
 import jwt
-from litestar.connection import ASGIConnection
-from litestar.exceptions import NotAuthorizedException, ServiceUnavailableException
-from litestar.middleware import AbstractAuthenticationMiddleware, AuthenticationResult
-from litestar.openapi.spec import Components, SecurityRequirement, SecurityScheme
-from litestar.types import ASGIApp, Method, Scopes
 
 from jwks_client.errors import JWKSFetchError
 from jwks_client.verifier import TokenVerifier, UserParser, extract_bearer_token
+
+
+try:
+    from litestar.connection import ASGIConnection
+    from litestar.exceptions import NotAuthorizedException, ServiceUnavailableException
+    from litestar.middleware import AbstractAuthenticationMiddleware, AuthenticationResult
+    from litestar.openapi.spec import Components, SecurityRequirement, SecurityScheme
+    from litestar.types import ASGIApp, Method, Scopes
+except ImportError as exc:
+    msg = "jwks_client.litestar requires the litestar extra: pip install 'jwks-client[litestar]'"
+    raise ImportError(msg) from exc
 
 
 UNAUTHORIZED_HEADERS: typing.Final = {"WWW-Authenticate": "Bearer"}

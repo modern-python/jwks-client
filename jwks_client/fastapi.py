@@ -1,12 +1,18 @@
 import typing
 
 import jwt
-from fastapi import HTTPException, Request, status
-from fastapi.openapi.models import HTTPBearer, OpenIdConnect
-from fastapi.security.base import SecurityBase
 
 from jwks_client.errors import JWKSFetchError
 from jwks_client.verifier import TokenVerifier, UserParser, extract_bearer_token
+
+
+try:
+    from fastapi import HTTPException, Request, status
+    from fastapi.openapi.models import HTTPBearer, OpenIdConnect
+    from fastapi.security.base import SecurityBase
+except ImportError as exc:
+    msg = "jwks_client.fastapi requires the fastapi extra: pip install 'jwks-client[fastapi]'"
+    raise ImportError(msg) from exc
 
 
 UNAUTHORIZED_HEADERS: typing.Final = {"WWW-Authenticate": "Bearer"}
