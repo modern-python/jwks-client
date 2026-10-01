@@ -39,9 +39,7 @@ class FakeIdentityProvider:
 
     def create_jwks_client(self) -> JWKSClient:
         transport: typing.Final = httpx2.MockTransport(lambda _: httpx2.Response(200, json=self.jwks))
-        return JWKSClient(
-            self.jwks_uri, http_client=httpware.AsyncClient(httpx2_client=httpx2.AsyncClient(transport=transport))
-        )
+        return JWKSClient(self.jwks_uri, http_client=httpware.AsyncClient(transport=transport))
 
 
 class StaticTokenVerifier:
