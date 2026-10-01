@@ -85,7 +85,7 @@ def signing_key() -> SigningKey:
 
 @pytest.fixture
 def http_client(server: JWKSServer) -> httpware.AsyncClient:
-    return httpware.AsyncClient(httpx2_client=httpx2.AsyncClient(transport=httpx2.MockTransport(server.handle)))
+    return httpware.AsyncClient(transport=httpx2.MockTransport(server.handle))
 
 
 @pytest.fixture

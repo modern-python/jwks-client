@@ -74,9 +74,7 @@ async def test_missing_or_invalid_token_is_unauthorized(verifier: JWTVerifier, t
 
 async def test_unreachable_identity_provider_is_service_unavailable(idp: FakeIdentityProvider) -> None:
     transport = httpx2.MockTransport(lambda _: httpx2.Response(HTTPStatus.BAD_GATEWAY))
-    jwks = JWKSClient(
-        idp.jwks_uri, http_client=httpware.AsyncClient(httpx2_client=httpx2.AsyncClient(transport=transport))
-    )
+    jwks = JWKSClient(idp.jwks_uri, http_client=httpware.AsyncClient(transport=transport))
 
     response = await call(build_app(JWKSBearer(JWTVerifier(jwks, algorithms=["RS256"]))), idp.issue_token())
 

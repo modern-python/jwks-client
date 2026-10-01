@@ -103,9 +103,7 @@ async def test_token_outside_policy_is_unauthorized(idp: FakeIdentityProvider, v
 
 async def test_unreachable_identity_provider_is_service_unavailable(idp: FakeIdentityProvider) -> None:
     transport = httpx2.MockTransport(lambda _: httpx2.Response(HTTPStatus.BAD_GATEWAY))
-    jwks = JWKSClient(
-        idp.jwks_uri, http_client=httpware.AsyncClient(httpx2_client=httpx2.AsyncClient(transport=transport))
-    )
+    jwks = JWKSClient(idp.jwks_uri, http_client=httpware.AsyncClient(transport=transport))
     async with AsyncTestClient(build_app(JWTVerifier(jwks, algorithms=["RS256"]))) as client:
         response = await client.get("/claims", headers={"Authorization": f"Bearer {idp.issue_token()}"})
 
