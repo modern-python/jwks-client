@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 import jwt
 import pytest
@@ -22,7 +22,7 @@ async def test_fake_identity_provider_issues_expired_tokens() -> None:
     verifier = JWTVerifier(idp.create_jwks_client(), algorithms=["RS256"])
 
     with pytest.raises(jwt.ExpiredSignatureError):
-        await verifier.verify(idp.issue_token(expires_in=datetime.timedelta(seconds=-1)))
+        await verifier.verify(idp.issue_token(expires_in=dt.timedelta(seconds=-1)))
 
 
 async def test_fake_identity_provider_headers_override_kid() -> None:

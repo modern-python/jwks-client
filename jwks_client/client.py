@@ -1,6 +1,6 @@
 import asyncio
 import dataclasses
-import datetime
+import datetime as dt
 import logging
 import math
 import time
@@ -126,7 +126,7 @@ class JWKSClient:
         algorithms: Sequence[str],
         audience: str | Iterable[str] | None = None,
         issuer: str | Container[str] | None = None,
-        leeway: float | datetime.timedelta = 0,
+        leeway: float | dt.timedelta = 0,
         options: Options | None = None,
     ) -> dict[str, typing.Any]:
         header: typing.Final = jwt.get_unverified_header(token)
