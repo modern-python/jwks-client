@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 from collections.abc import Callable, Container, Iterable, Sequence
 
@@ -25,7 +25,7 @@ class JWTVerifier:
         algorithms: Sequence[str],
         audience: str | Iterable[str] | None = None,
         issuer: str | Container[str] | None = None,
-        leeway: float | datetime.timedelta = 0,
+        leeway: float | dt.timedelta = 0,
         options: Options | None = None,
     ) -> None:
         if not algorithms:

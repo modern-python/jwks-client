@@ -1,6 +1,6 @@
 import asyncio
 import dataclasses
-import datetime
+import datetime as dt
 import json
 import typing
 
@@ -31,7 +31,7 @@ class SigningKey:
     def issue_token(
         self, claims: dict[str, typing.Any] | None = None, *, algorithm: str = "RS256", **headers: str
     ) -> str:
-        payload = {"sub": "user-1", "exp": datetime.datetime.now(tz=datetime.UTC) + datetime.timedelta(minutes=5)}
+        payload = {"sub": "user-1", "exp": dt.datetime.now(tz=dt.UTC) + dt.timedelta(minutes=5)}
         return jwt.encode(
             payload | (claims or {}), self.private_key, algorithm=algorithm, headers={"kid": self.kid} | headers
         )

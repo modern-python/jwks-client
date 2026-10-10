@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import json
 import typing
 from collections.abc import Mapping
@@ -12,7 +12,7 @@ from jwt.algorithms import RSAAlgorithm
 from jwks_client.client import JWKSClient
 
 
-DEFAULT_TOKEN_LIFETIME: typing.Final = datetime.timedelta(minutes=5)
+DEFAULT_TOKEN_LIFETIME: typing.Final = dt.timedelta(minutes=5)
 
 
 class FakeIdentityProvider:
@@ -28,10 +28,10 @@ class FakeIdentityProvider:
         self,
         claims: Mapping[str, typing.Any] | None = None,
         *,
-        expires_in: datetime.timedelta = DEFAULT_TOKEN_LIFETIME,
+        expires_in: dt.timedelta = DEFAULT_TOKEN_LIFETIME,
         headers: Mapping[str, typing.Any] | None = None,
     ) -> str:
-        now: typing.Final = datetime.datetime.now(tz=datetime.UTC)
+        now: typing.Final = dt.datetime.now(tz=dt.UTC)
         payload: typing.Final = {"iss": self.issuer, "iat": now, "exp": now + expires_in} | dict(claims or {})
         return jwt.encode(
             payload, self._private_key, algorithm="RS256", headers={"kid": self.kid} | dict(headers or {})

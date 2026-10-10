@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import typing
 
 import jwt
@@ -35,7 +35,7 @@ async def test_decode_rejects_expired_token(
 ) -> None:
     server.serve(signing_key.to_jwk())
     client = make_client()
-    expired = datetime.datetime.now(tz=datetime.UTC) - datetime.timedelta(minutes=1)
+    expired = dt.datetime.now(tz=dt.UTC) - dt.timedelta(minutes=1)
 
     with pytest.raises(jwt.ExpiredSignatureError):
         await client.decode(signing_key.issue_token({"exp": expired}), algorithms=["RS256"])
@@ -46,7 +46,7 @@ async def test_decode_honours_leeway(
 ) -> None:
     server.serve(signing_key.to_jwk())
     client = make_client()
-    expired = datetime.datetime.now(tz=datetime.UTC) - datetime.timedelta(seconds=10)
+    expired = dt.datetime.now(tz=dt.UTC) - dt.timedelta(seconds=10)
 
     claims = await client.decode(signing_key.issue_token({"exp": expired}), algorithms=["RS256"], leeway=60)
 
