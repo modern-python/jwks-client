@@ -194,7 +194,10 @@ token = idp.issue_token({"sub": "user-1", "aud": "my-api"})
 `StaticTokenVerifier({"dev-token": {"sub": "developer"}})` accepts fixed tokens without any
 signature, for local development only.
 
-## 📦 [PyPI](https://pypi.org/project/jwks-client) · 📝 [License](https://github.com/modern-python/jwks-client/blob/main/LICENSE)
+## Links
+
+- [PyPI](https://pypi.org/project/jwks-client)
+- [License](https://github.com/modern-python/jwks-client/blob/main/LICENSE)
 
 ## Part of `modern-python`
 
