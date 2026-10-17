@@ -7,12 +7,12 @@ repository.
 
 `jwks-client` is an async client that fetches and caches an identity provider's JSON Web Key Set and
 verifies JWTs against it; [`CONTEXT.md`](CONTEXT.md) opens with what it does and owns the
-vocabulary — read it before naming a concept in code, a test name, or an issue title.
+vocabulary. Read it before naming a concept in code, a test name, or an issue title.
 
 ## Commands
 
-`just` (task runner) and `uv` (package manager). The [`justfile`](justfile) is the source of truth —
-`just --list`, or read it.
+`just` (task runner) and `uv` (package manager). The [`justfile`](justfile) is the source of truth:
+run `just --list`, or read it.
 
 ## Architecture
 
