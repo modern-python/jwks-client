@@ -59,9 +59,6 @@ lint = [
 requires = ["uv_build>=0.11,<1.0"]
 build-backend = "uv_build"
 
-[tool.uv]
-constraint-dependencies = ["multidict!=7.2.0"]
-
 [tool.uv.build-backend]
 module-name = "jwks_client"
 module-root = ""
