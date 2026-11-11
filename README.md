@@ -199,6 +199,8 @@ signature, for local development only.
 - [PyPI](https://pypi.org/project/jwks-client)
 - [License](https://github.com/modern-python/jwks-client/blob/main/LICENSE)
 
+If this project saves you time, consider giving it a star on GitHub.
+
 ## Part of `modern-python`
 
 Browse the full list of templates and libraries in
